@@ -17,7 +17,7 @@ const compressVideo=(id,videoUrl,isPhoneEnabled)=>{
     try{
         return new Promise((resolve,reject)=>{
             const compressedVideoId='compressedVideo-'+id;
-            const uniqueCompressVideoUrl=`./VideoFileCompression/${compressedVideoId}.mp4`;
+            const uniqueCompressVideoUrl=`./${compressedVideoId}.mp4`;
             const video=videoUrl;
             const compressionFactors=isPhoneEnabled==true?'700x880':'1280x480';
             ffmpeg(video)
@@ -41,7 +41,7 @@ const createVideoFile=(id,decodedVideo)=>{
     try{
         return new Promise((resolve,reject)=>{
             const uniqueVideoTag='video-'+id;
-            const uniqueDummyVideoUrl=`./VideoCompression/${uniqueVideoTag}.mp4`;
+            const uniqueDummyVideoUrl=`./${uniqueVideoTag}.mp4`;
             fs.writeFile(uniqueDummyVideoUrl,decodedVideo, ()=>{
                 resolve(uniqueDummyVideoUrl);
             })
@@ -85,6 +85,7 @@ const videoCompression=async({videoUrl,isPhoneEnabled})=>{
         console.log("Creating video file compression");
         if(videoUrl!="" && videoUrl!=null){
             const uniqueVerificationId=uuid.v4();
+            console.log("Starting compression for video url:");
             videoUrl=videoUrl.replace('data:video/quicktime;base64,',"");
             videoUrl=videoUrl.replace('data:video/mp4;base64,',"");
             

@@ -73,25 +73,33 @@ const childProcess=(app)=>{
     })
 
     function handleRequest(worker,res,req,childProcessWorkerThread){
-        const {
-            waiting,
-            workerPool
-        }=childProcessWorkerThread;
-        
-        worker.postMessage(req.body);
-        worker.on('message',compressionData=>{
-            res.json({
-                confirmation:"Success",
-                data:{
-                    statusCode:201,
-                    message:compressionData
+        try{
+            const {
+                waiting,
+                workerPool
+            }=childProcessWorkerThread;
+            
+            worker.postMessage(req.body);
+            worker.on('message',compressionData=>{
+                try{
+                    res.json({
+                        confirmation:"Success",
+                        data:{
+                            statusCode:201,
+                            message:compressionData
+                        }
+                    })
+                    if (waiting.length > 0)
+                        waiting.shift()(worker);
+                    else
+                        workerPool.push(worker);
+                }catch(err){
+                    console.log("Error in worker encountered");
                 }
-            })
-            if (waiting.length > 0)
-                waiting.shift()(worker);
-            else
-                workerPool.push(worker);
-        });
+            });
+        }catch(err){
+            console.log("Error encountered");
+        }
     }
     const server=app.listen(process.env.port || 8081,()=>{
         console.log("Node video compression server running...");
