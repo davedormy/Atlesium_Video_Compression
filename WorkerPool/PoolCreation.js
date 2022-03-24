@@ -9,9 +9,12 @@ const createWorkerPool=()=>{
     ];
 
     const waiting = [];
+    const busy=[];
+
     const workerPoolInformation={
         waiting,
-        workerPool
+        workerPool,
+        busy
     }
     return workerPoolInformation;
 }
